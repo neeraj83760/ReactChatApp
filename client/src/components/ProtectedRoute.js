@@ -1,10 +1,10 @@
 import React, {useEffect} from 'react'
 import {useNavigate} from 'react-router-dom'
-import {GetCurrentUser} from '../apicalls/users'
+import {GetAllUsers, GetCurrentUser} from '../apicalls/users'
 import toast from "react-hot-toast"
 import { useDispatch, useSelector } from 'react-redux'
 import { HideLoader, ShowLoader } from '../redux/loaderSlice'
-import { SetUser } from '../redux/userSlice'
+import { setAllUsers, SetUser } from '../redux/userSlice'
 
 // Just commit check kar raha hu
 
@@ -13,7 +13,6 @@ function ProtectedRoute({children}){
   // const [user, setUser] = React.useState(null);
 
   const {user} = useSelector(state => state.userReducer);
-
   const dispatch = useDispatch(); 
   const navigate = useNavigate();
   
@@ -22,9 +21,11 @@ function ProtectedRoute({children}){
   try {
    dispatch(ShowLoader()); 
    const response = await GetCurrentUser();
+   const allUsersResponse = await GetAllUsers();
    dispatch(HideLoader());
    if(response.success){
     dispatch(SetUser(response.data))
+    dispatch(setAllUsers(allUsersResponse.data))
     // return true;
 
    }else{
@@ -40,6 +41,9 @@ function ProtectedRoute({children}){
    }
 
   };
+
+
+
   useEffect(()=>{
   if(localStorage.getItem('token')){
 
@@ -52,6 +56,9 @@ function ProtectedRoute({children}){
 
   },[]); 
 
+
+
+
   return (
     <div className='h-screen w-screen bg-gray-100 p-2'>
     {/* <h1>{user?.name}</h1>
@@ -63,9 +70,17 @@ function ProtectedRoute({children}){
       <i className ="ri-message-3-line text-2xl"></i>
       <h1 className='text-primary text-2xl uppercase font-bold'>Chatty</h1>
     </div>
-    <div className='flex gap-1 text-md'>
+    <div className='flex gap-1 text-md items-center'>
       <i class="ri-shield-user-line"></i>
       <h1 className='underline'>{user?.name}</h1>
+      <i class="ri-logout-circle-r-line ml-5 text-xl cursor-pointer"
+      onClick={() =>{ 
+
+        localStorage.removeItem("token");
+        navigate("/login");
+
+      }}
+      ></i>
     </div>
     </div>
 

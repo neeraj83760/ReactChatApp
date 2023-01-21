@@ -48,3 +48,17 @@ return response.data;
 
 }
 
+export const GetAllUsers = async (req, res) => {
+
+  try {
+
+    const response = await axiosInstance.get("/api/users/get-all-users");
+    return response.data;
+    
+  } catch (error) {
+
+    return error.response.data; 
+    
+  }
+}
+
