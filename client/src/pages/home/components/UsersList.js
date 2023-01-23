@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux'
 function UsersList({searchKey}) {
   const {allUsers} = useSelector(state => state.userReducer)
 
-  
     return (
     <div className='flex flex-col gap-3 mt-5'>
      {allUsers
